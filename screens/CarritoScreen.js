@@ -1,37 +1,26 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ImageBackground, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, Image, TouchableOpacity, FlatList } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
+import { useContext } from "react";
+import { DataContext } from "../screens/DataContext";
 
 const CarritoScreen = () => {
 
+  const { cart } = useContext(DataContext);
   const navigation = useNavigation();
 
   return (
     <ImageBackground source={require('../assets/images/background.png')} style={styles.imageBg}>
       <View style={styles.container}>
         <View style={styles.lisCont}>
-          <View style={styles.productoCont}>
-            <Image source={require('../assets/images/Iphone11.jpg')} style={styles.prodImg}></Image>
-            <Text style={styles.prodTxt}>Nombre: IPhone Pro 11</Text>
-            <Text style={styles.prodTxt}>Cantidad: 1</Text>
-          </View>
-          <View style={styles.productoCont}>
-            <Image source={require('../assets/images/airpods.jpg')} style={styles.prodImg}></Image>
-            <Text style={styles.prodTxt}>Nombre: AirPods</Text>
-            <Text style={styles.prodTxt}>Cantidad: 1</Text>
-          </View>
-        </View>
-        <View style={styles.lisCont}>
-          <View style={styles.productoCont}>
-            <Image source={require('../assets/images/pocox3.jpg')} style={styles.prodImg}></Image>
-            <Text style={styles.prodTxt}>Nombre: Poco X3</Text>
-            <Text style={styles.prodTxt}>Cantidad: 1</Text>
-          </View>
-          <View style={styles.productoCont}>
-            <Image source={require('../assets/images/redmibuds.jpg')} style={styles.prodImg}></Image>
-            <Text style={styles.prodTxt}>Nombre: RedmiBuds</Text>
-            <Text style={styles.prodTxt}>Cantidad: 2</Text>
-          </View>
+          <FlatList data={cart} renderItem={({item}) => (
+            <View style={styles.productoCont}>
+              <Image source={{uri: item.imagen}} style={styles.prodImg}></Image>
+              <Text style={styles.prodTxt}>{item.nombre}</Text>
+              <Text style={styles.prodTxt}>{item.precio}$</Text>
+            </View>
+          )}>
+          </FlatList>
         </View>
         <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate("Factura")}>
           <Text style={styles.btnTxt}>Pagar</Text>
@@ -45,7 +34,6 @@ const CarritoScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(10, 10, 10, 0.4)',
     fontFamily: 'sans-serif',
     margin: 15,
     borderRadius: 8,
@@ -88,9 +76,13 @@ const styles = StyleSheet.create({
   },
   prodTxt:{
     color: '#fff',
+    justifyContent: 'center',
+    alignContent: 'center',
+    textAlign: 'center'
   },
   lisCont:{
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginLeft: 90
   },
   btn:{
     marginTop: 30,

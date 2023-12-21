@@ -1,13 +1,32 @@
-import { View, Text, StyleSheet } from "react-native";
-import { Table, Row, Rows } from "react-native-reanimated-table";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import { useContext } from "react";
+import { DataContext } from "../screens/DataContext";
 
 const FacturaScreen = () => {
+
+    const { cart } = useContext(DataContext);
+
+    const total = cart.reduce((acc, ele) => acc + parseFloat(ele.precio), 0)
+    const iva = parseFloat(total) * 0.12;
+    const totIva = parseFloat(iva) + parseFloat(total);
+
     return (
-        <View style={styles.container}>
-            <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-                <Row data={state.tableHead} style={styles.head} textStyle={styles.text}/>
-                <Rows data={state.tableData} textStyle={styles.text}/>
-            </Table>
+        <View style={styles.containerGen}>
+            <View style={styles.containerTit}>
+                <Text style={styles.colTitulo}>Nombre</Text>
+                <Text style={styles.colTitulo}>Precio</Text>
+            </View>
+            <FlatList data={cart} renderItem={({item}) => (
+                <View style={styles.container}>
+                    <View style={styles.colCont}>
+                        <Text style={styles.txtInfo}>{item.nombre}</Text>
+                    </View>
+                    <View style={styles.colCont}>
+                        <Text style={styles.txtInfo}>{item.precio}</Text>
+                    </View>
+                </View>
+            )}>
+            </FlatList>
             <View style={styles.contPrec}>
                 <View>
                     <Text>Precio Total:</Text>
@@ -15,9 +34,9 @@ const FacturaScreen = () => {
                     <Text>Precio Total + IVA:</Text>
                 </View>
                 <View>
-                    <Text>$1700</Text>
-                    <Text>$204</Text>
-                    <Text>$1904</Text>
+                    <Text>${total}</Text>
+                    <Text>${iva}</Text>
+                    <Text>${totIva}</Text>
                 </View>
             </View>
         </View>
@@ -25,33 +44,40 @@ const FacturaScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
+    containerGen: {
         margin: 15,
         marginTop: 20
     },
-    head: { 
-        height: 40, 
-        backgroundColor: '#f1f8ff' 
-    },
-    text: { 
-        margin: 6 
+    container: {
+        flexDirection: "row",
     },
     contPrec: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         fontSize: 20,
-        marginTop: 15
+        marginTop: 50
+    },
+    containerTit: {
+        margin: 10,
+        flexDirection: "row",
+        marginBottom: 0,
+        marginLeft: 15
+    },
+    colCont: {
+        margin: 18,
+        marginBottom: 0,
+    },
+    colTitulo: {
+        fontSize: 20,
+        textAlign: "center",
+        margin: 0,
+        marginTop: 5,
+        marginRight: 70
+    },
+    txtInfo: {
+        fontSize: 15,
+        marginRight: 40
     }
 });
-
-const state = {
-    tableHead: ["Nombre", "Cantidad", "Precio"],
-    tableData: [
-        ["IPhone Pro 11", "1", "800"],
-        ["AirPods", "1", "450"],
-        ["Poco X3", "1", "400"],
-        ["RedmiBuds", "2", "50"]
-    ]
-}
 
 export default FacturaScreen;
